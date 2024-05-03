@@ -54,6 +54,7 @@ def post_name(event): # event listener for keystrokes
     counter_names += 1 # increment counter (have to specify an index for the list box)
     txtName.insert(END, entryName.get() + '\n') # insert text from entry box to text box / end means the end of the text widget
     lbName.insert(counter_names, entryName.get()) # insert text from entry box to list box
+    #lbName.insert(END, entryName.get()) # insert text from entry box to list box
     entryName.delete(0, 'end') # clear the entry box 
     
 
@@ -65,7 +66,8 @@ txtName = Text(canvas_left, font=font_page, height=5, bg='lightblue', width=20) 
 txtName.grid(column=0, row=4, padx=20, pady=10)
 
 lbName = Listbox(canvas_footer, font=font_page, width=25, bg='lightgreen') # list box
-lbName.place(anchor='center', relx=.5, rely=.1)
+#lbName.place(anchor='center', relx=.5, rely=.1)
+lbName.pack(anchor='center', padx=2, pady=2)
 
 # canvas colors: https://www.tkinter.org/doc/stable/reference/colors.html
 
