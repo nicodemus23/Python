@@ -39,7 +39,7 @@ font_page = tkFont.Font(family='Arial 16 bold', size=12)
 
 #Controls
 lblTitle = Label(canvas_header, text='Welcome, yall!', font=font_title, fg='white', bg='red')
-lblTitle.place(relx=.5, rely=.5, anchor='center')
+lblTitle.place(relx=.5, rely=.5, anchor='center')  
 
 lblName = Label(canvas_left, text="What's your name?", font=font_page, fg='orange', bg='blue')
 lblName.grid(column=0, row=0, padx=10, pady=10)
@@ -70,6 +70,5 @@ lbName = Listbox(canvas_footer, font=font_page, width=25, bg='lightgreen') # lis
 lbName.pack(anchor='center', padx=2, pady=2)
 
 # canvas colors: https://www.tkinter.org/doc/stable/reference/colors.html
-
 
 root.mainloop() # start main loop to show the form # keep the window open

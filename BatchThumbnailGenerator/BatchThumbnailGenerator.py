@@ -1,7 +1,7 @@
 import os
 from PIL import Image
 
-if __name__ == '__main__':
+if __name__ == '__main__': # example from stack overflow https://stackoverflow.com/questions/419163/what-does-if-name-main-do (has to be run by command)
     print('Running BatchThumbnailGenerator.py')
     # Paths for input and output directories
     input_dir = 'images'
@@ -17,7 +17,7 @@ if __name__ == '__main__':
 
     # loop through all images and process each 
     for i, image_file in enumerate(image_files):
-        print(f'Processing image {i+1}: {image_file}')
+        print(f'Processing image {i+1}: {image_file}') # print the image file name
         
         # open image
         image_path = os.path.join(input_dir, image_file)
@@ -28,11 +28,11 @@ if __name__ == '__main__':
 
         # crop edges to square
         width, height = image.size
-        size = min(width, height)
-        left = (width - size) / 2
-        top = (height - size) / 2
-        right = left + size
-        bottom = top + size
+        size = min(width, height) # get the minimum of the width and height
+        left = (width - size) / 2 # top left corner
+        top = (height - size) / 2 # top right corner
+        right = left + size  # bottom right corner
+        bottom = top + size # bottom left corner
         image = image.crop((left, top, right, bottom))
 
         #rotate image
