@@ -8,7 +8,7 @@ page = urlopen(url)
 sup = BeautifulSoup(page, "html.parser") # convert raw html data into a readable format 
 
 print(sup) # print the html data
-#targeted search for table wit attribute class : key wikitables
+#targeted search for table with attribute class : key wikitables
 the_table = sup.find('table', {'class' : {'wikitable'}}) # find the table with the class wikitable
 # find the first occurence of <tobdy> tag
 the_body = the_table.find('tbody') # find the body of the table

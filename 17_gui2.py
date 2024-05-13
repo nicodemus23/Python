@@ -3,8 +3,8 @@
 # to place controls on the canvas
 
 from tkinter import * # access all the classes from tkinter module
-import sys
-import tkinter.font as tkFont
+import sys # import the sys module for system functions 
+import tkinter.font as tkFont # import the font module from tkinter
 
 root = Tk() # create a blank window
 root.geometry("800x600") # set window size

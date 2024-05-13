@@ -1,0 +1,38 @@
+Heading: Date
+Date: Mar 25
+Event: First Day of Class
+
+Date: Mar 25 - Apr 26
+Event: Sprint 1
+
+Date: Mar 25 - Mar 27
+Event: Add/Drop Period Sprint 1
+
+Date: Mar 28 - Apr 3
+Event: Withdrawal Period "W"
+
+Date: Apr 4 - Apr 9
+Event: Withdrawal Period "WS/WU"
+
+Date: Apr 26
+Event: Grading Day (no class except Enterprise Project)
+
+Date: April 29 - May 31
+Event: Sprint 2
+
+Date: April 29 - May 1
+Event: Course Adjustment Period Sprint 2
+
+Date: May 2 - May 8
+Event: Withdrawal Period "W" for Sprint 2 only
+
+Date: May 9 - May 14
+Event: Withdrawal Period "WS/WU" for Sprint 2 only
+
+Date: May 27
+Event: Memorial Day (no class)
+
+Date: May 31
+Event: Last Day of Class
+
+
