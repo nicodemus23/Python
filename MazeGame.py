@@ -35,8 +35,8 @@ maze = [
     [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1],
     [1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
-    [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 1],
     [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 1],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] # row 16
 ]   # columns: 20, rows: 17
@@ -99,8 +99,8 @@ def draw_text(surface, text, color, rect, font):
     y = rect[1] + 8
     for line in lines:
         text_surface = font.render(line, True, color)
-        surface.blit(text_surface, (rect[0] + 12, y))
-        y += font.get_height()
+        surface.blit(text_surface, (rect[0] + 12, y)) # https://realpython.com/lessons/using-blit-and-flip/#:~:text=blit()%20is%20how%20you,Surface%20%2C%20that's%20not%20a%20problem.
+        y += font.get_height() # move down one line
     
 # resets the game when the player wins or loses (resets the player and cube positions)
 def reset_game():
@@ -166,7 +166,7 @@ while running:
     if player_x == cube_x and player_y == cube_y:
         cube_rescued = True
         #police_positions = [(1 * cell_size, 1 * cell_size), (1* cell_size, 18 * cell_size), (16 * cell_size, 1 * cell_size), (16 * cell_size, 18 * cell_size)]
-        police_positions = [(1, 1), (1, 16), (15, 1), (15, 16)]
+        police_positions = [(1, 1), (1, 16), (15, 1), (15, 11)]
         
     # move cube with player (if cube is rescued)
     if cube_rescued:
