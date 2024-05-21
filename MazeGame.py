@@ -22,7 +22,7 @@ yellow = (255, 255, 0)
 
 # maze layout
 maze = [
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], # row 0
     [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
     [1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1],
     [1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1],
@@ -38,8 +38,8 @@ maze = [
     [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
     [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1],
     [1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 2, 1],
-    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-]
+    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] # row 16
+]   # columns: 20, rows: 17
 
 cell_size = 41
 maze_position = (10, 10) # adjust the maze position to center it on the screen
@@ -112,7 +112,7 @@ def reset_game():
     game_won = False
     game_over = False
     timer_start = time.time()
-    #police_positions = []
+    police_positions = []
 
 # frame rate (helps controls the speed of the game and player movement)
 clock = pygame.time.Clock()
@@ -135,6 +135,8 @@ while running:
                 move_left = True
             elif event.key == pygame.K_d and maze[player_y][player_x+1] != 1:  # right
                 move_right = True
+            elif event.key == pygame.K_RETURN and (game_over or game_won):  # Enter key to restart the game
+                reset_game()
                 
         # check for KEYUP event
         if event.type == pygame.KEYUP:
@@ -161,7 +163,8 @@ while running:
     # check if player has rescued the cube
     if player_x == cube_x and player_y == cube_y:
         cube_rescued = True
-        #police_positions = [(1, 1), (1, 18), (16, 1), (16, 18)]
+        #police_positions = [(1 * cell_size, 1 * cell_size), (1* cell_size, 18 * cell_size), (16 * cell_size, 1 * cell_size), (16 * cell_size, 18 * cell_size)]
+        police_positions = [(1, 1), (1, 16), (15, 1), (15, 16)]
         
     # move cube with player (if cube is rescued)
     if cube_rescued:
@@ -174,34 +177,45 @@ while running:
         if move_right and maze[cube_y][cube_x+1] != 1:
             cube_x += 1
             
-    # for i in range(len(police_positions)):
-    #     police_x, police_y = police_positions[i]  # get the x and y position of the police
-    #     if cube_rescued:
-    #         # Check if the police can move right
-    #         if police_x < cube_x and int(round(police_x + 1)) < len(maze[0]) and maze[int(round(police_y))][int(round(police_x + 1))] != 1:
-    #             police_x += police_speed
-    #         # Check if the police can move left
-    #         elif police_x > cube_x and int(round(police_x - 1)) >= 0 and maze[int(round(police_y))][int(round(police_x - 1))] != 1:
-    #             police_x -= police_speed
-    #         # Check if the police can move down
-    #         if police_y < cube_y and int(round(police_y + 1)) < len(maze) and maze[int(round(police_y + 1))][int(round(police_x))] != 1:
-    #             police_y += police_speed
-    #         # Check if the police can move up
-    #         elif police_y > cube_y and int(round(police_y - 1)) >= 0 and maze[int(round(police_y - 1))][int(round(police_x))] != 1:
-    #             police_y -= police_speed
-    #     police_positions[i] = (police_x, police_y)
+    for i in range(len(police_positions)):
+        police_x, police_y = police_positions[i]  # get the x and y position of the police
+        if cube_rescued:
+            # boundary check:
+            police_row = max(0, min(len(maze) - 1, police_x))
+            police_col = max(0, min(len(maze[0]) - 1, police_y))
+            cube_row = int(cube_x)
+            cube_col = int(cube_y)
+            
+            # Check if the police can move right
+            print(f"Attempting to access maze[{police_row}][{police_col + 1}]")
+            if police_col < cube_col and police_col + 1 < len(maze[0]) and maze[police_row][police_col + 1] != 1:
+                police_x += police_speed * cell_size
+            # Check if the police can move left
+            elif police_col > cube_col and police_col - 1 >= 0 and maze[police_row][police_col - 1] != 1:
+                police_x -= police_speed * cell_size
+            # Check if the police can move down
+            if police_row < cube_row and police_row + 1 < len(maze) and maze[police_row + 1][police_col] != 1:
+                police_y += police_speed * cell_size
+            # Check if the police can move up
+            elif police_row > cube_row and police_row - 1 >= 0 and maze[police_row - 1][police_col] != 1:
+                police_y -= police_speed * cell_size
 
-    #     # This is very basic collision detection
-    #     if abs(police_x - cube_x) < 1 and abs(police_y - cube_y) < 1:
-    #         cube_rescued = False
-    #         cube_x = 10
-    #         cube_y = 10
-    #         game_over = True
+            # This is very basic collision detection
+            if abs(police_row - cube_y) < 1 and abs(police_col - cube_x) < 1:
+                cube_rescued = False
+                cube_x = 10
+                cube_y = 10
+                game_over = True
+        #police_positions[i] = (police_x, police_y)
             
     # timer logic
-    current_time = time.time()
-    elapsed_time = current_time - timer_start
-    remaining_time = max(timer_duration - elapsed_time, 0) # max function to prevent negative time
+    # current_time = time.time()
+    # elapsed_time = current_time - timer_start
+    # remaining_time = max(timer_duration - elapsed_time, 0) # max function to prevent negative time
+    if not game_over and not game_won:
+        current_time = time.time()
+        elapsed_time = current_time - timer_start
+        remaining_time = max(timer_duration - elapsed_time, 0)
     
     # check if the timer has run out
     if remaining_time == 0 and not game_won:
@@ -231,23 +245,25 @@ while running:
     pygame.draw.rect(window, red, (cube_x * cell_size + maze_position[0], cube_y*cell_size + maze_position[1], cell_size, cell_size))
     
     # popo flasher timer
-    # police_flash_timer += 2
-    # if police_flash_timer >= police_flash_interval:
-    #     police_flash_timer = 0
+    police_flash_timer += 2
+    if police_flash_timer >= police_flash_interval:
+        police_flash_timer = 0
     
-    # for police_x, police_y in police_positions:
-    #     if police_flash_timer < police_flash_interval // 2:
-    #         pygame.draw.polygon(window, red, [
-    #             (police_x*cell_size + maze_position[0], police_y*cell_size + maze_position[1]),
-    #             (police_x*cell_size + cell_size//2 + maze_position[0], police_y*cell_size + cell_size + maze_position[1]),
-    #             (police_x*cell_size + cell_size + maze_position[0], police_y*cell_size + maze_position[1])
-    #         ])
-    #     else:
-    #         pygame.draw.polygon(window, blue, [
-    #             (police_x*cell_size + maze_position[0], police_y*cell_size + maze_position[1]),
-    #             (police_x*cell_size + cell_size//2 + maze_position[0], police_y*cell_size + cell_size + maze_position[1]),
-    #             (police_x*cell_size + cell_size + maze_position[0], police_y*cell_size + maze_position[1])
-    #         ])
+    for police_row, police_col in police_positions:
+        police_x = police_col * cell_size + maze_position[0]
+        police_y = police_row * cell_size + maze_position[1]
+        if police_flash_timer < police_flash_interval // 2:
+            pygame.draw.polygon(window, red, [
+                (police_x, police_y),
+                (police_x + cell_size // 2, police_y + cell_size),
+                (police_x + cell_size, police_y)
+            ])
+        else:
+            pygame.draw.polygon(window, blue, [
+                (police_x, police_y),
+                (police_x + cell_size // 2, police_y + cell_size),
+                (police_x + cell_size, police_y)
+            ])
     
     # draw GUI
     pygame.draw.rect(window, black, title_area)
@@ -261,11 +277,12 @@ while running:
     draw_text(window, "Maze Game", white, title_area, title_font)
     draw_text(window, f"Time: {int(remaining_time)}", white, (info_area[0], info_area[1], info_area[2], 40), font)
     
-    if game_won:
-        #draw_text(window, "You Win!", white, (info_area[0], info_area[1] + 20, info_area[2], 40)) 
-        draw_text(window, "You got away!", green, (info_area[0], info_area[1] + 40), font)
-        draw_text(window, "Press Enter to play again", white, (info_area[0], info_area[1] + 80), font)
-        
+    # if game_won:
+    #     #draw_text(window, "You Win!", white, (info_area[0], info_area[1] + 20, info_area[2], 40)) 
+    #     draw_text(window, "You got away!", green, (info_area[0], info_area[1] + 40, info_area[2], info_area[3] - 40), font)
+
+    #     draw_text(window, "Press Enter to play again", white, (info_area[0], info_area[1] + 80, info_area[2], info_area[3] - 80), font)
+
     if game_won:
         draw_text(window, "You got away! Press Enter to play again.", green, (info_area[0], info_area[1] + 40, info_area[2], info_area[3] - 40), font)
     
