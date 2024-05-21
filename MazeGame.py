@@ -67,6 +67,7 @@ move_right = False
 cube_rescued = False
 game_won = False
 game_over = False
+game_over_reason = ""
 
 # timer
 timer_duration = 60 # 60 seconds
@@ -113,6 +114,7 @@ def reset_game():
     game_over = False
     timer_start = time.time()
     police_positions = []
+    game_over_reason = ""  # Reset the game over reason
 
 # frame rate (helps controls the speed of the game and player movement)
 clock = pygame.time.Clock()
@@ -178,35 +180,29 @@ while running:
             cube_x += 1
             
     for i in range(len(police_positions)):
-        police_x, police_y = police_positions[i]  # get the x and y position of the police
+        police_row, police_col = police_positions[i]  # get the row and column position of the police
         if cube_rescued:
-            # boundary check:
-            police_row = max(0, min(len(maze) - 1, police_x))
-            police_col = max(0, min(len(maze[0]) - 1, police_y))
-            cube_row = int(cube_x)
-            cube_col = int(cube_y)
-            
             # Check if the police can move right
-            print(f"Attempting to access maze[{police_row}][{police_col + 1}]")
-            if police_col < cube_col and police_col + 1 < len(maze[0]) and maze[police_row][police_col + 1] != 1:
-                police_x += police_speed * cell_size
+            if police_col < cube_x and police_col + 1 < len(maze[0]) and maze[police_row][police_col + 1] != 1:
+                police_col += 1
             # Check if the police can move left
-            elif police_col > cube_col and police_col - 1 >= 0 and maze[police_row][police_col - 1] != 1:
-                police_x -= police_speed * cell_size
+            elif police_col > cube_x and police_col - 1 >= 0 and maze[police_row][police_col - 1] != 1:
+                police_col -= 1
             # Check if the police can move down
-            if police_row < cube_row and police_row + 1 < len(maze) and maze[police_row + 1][police_col] != 1:
-                police_y += police_speed * cell_size
+            if police_row < cube_y and police_row + 1 < len(maze) and maze[police_row + 1][police_col] != 1:
+                police_row += 1
             # Check if the police can move up
-            elif police_row > cube_row and police_row - 1 >= 0 and maze[police_row - 1][police_col] != 1:
-                police_y -= police_speed * cell_size
+            elif police_row > cube_y and police_row - 1 >= 0 and maze[police_row - 1][police_col] != 1:
+                police_row -= 1
 
             # This is very basic collision detection
-            if abs(police_row - cube_y) < 1 and abs(police_col - cube_x) < 1:
+            if police_row == cube_y and police_col == cube_x:
                 cube_rescued = False
                 cube_x = 10
                 cube_y = 10
                 game_over = True
-        #police_positions[i] = (police_x, police_y)
+                game_over_reason = "arrested"
+        police_positions[i] = (police_row, police_col)
             
     # timer logic
     # current_time = time.time()
@@ -220,6 +216,7 @@ while running:
     # check if the timer has run out
     if remaining_time == 0 and not game_won:
         game_over = True
+        game_over_reason = "timeout"
             
     # check if the player made it to the exit with the cube
     if maze[player_y][player_x] == 2 and cube_rescued:
@@ -287,9 +284,9 @@ while running:
         draw_text(window, "You got away! Press Enter to play again.", green, (info_area[0], info_area[1] + 40, info_area[2], info_area[3] - 40), font)
     
     if game_over:
-        if cube_rescued:
+        if game_over_reason == "arrested":
             draw_text(window, "You lost! The cube was re-arrested. Press Enter to play again.", red, (info_area[0], info_area[1] + 40, info_area[2], info_area[3] - 40), font)
-        else:
+        elif game_over_reason == "timeout":
             draw_text(window, "You lost! Time's up. Press Enter to play again.", red, (info_area[0], info_area[1] + 40, info_area[2], info_area[3] - 40), font)
 
     
