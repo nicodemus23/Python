@@ -2,12 +2,12 @@ import pygame
 import time
 import random
 
-pygame.init()
+pygame.init() # initialize pygame
 
 # window
 window_width = 1280
 window_height = 720
-window = pygame.display.set_mode((window_width, window_height)) # set the window size
+window = pygame.display.set_mode((window_width, window_height)) # set the window size (width, height)
 
 pygame.display.set_caption("Get Away Maze") # set the window title
 
@@ -71,7 +71,7 @@ game_over_reason = ""
 
 # timer
 timer_duration = 60 # 60 seconds
-timer_start = time.time()
+timer_start = time.time() 
 
 # UI positions
 title_area = (window_width - 392, 20, 370, 60)
@@ -88,7 +88,7 @@ def draw_text(surface, text, color, rect, font):
     lines = []
     current_line = ""
     for word in words:
-        if font.size(current_line + " " + word)[0] < rect[2] - 20:
+        if font.size(current_line + " " + word)[0] < rect[2] - 20: # check if the word fits in the rect / rect[2] is the width of the rect
             current_line += " " + word
         else:
             lines.append(current_line)
@@ -178,21 +178,22 @@ while running:
             cube_x -= 1
         if move_right and maze[cube_y][cube_x+1] != 1:
             cube_x += 1
-            
-    for i in range(len(police_positions)):
+    
+    # police movement logic
+    for i in range(len(police_positions)): # loop through the police positions
         police_row, police_col = police_positions[i]  # get the row and column position of the police
         if cube_rescued:
             # Check if the police can move right
-            if police_col < cube_x and police_col + 1 < len(maze[0]) and maze[police_row][police_col + 1] != 1:
+            if police_col < cube_x and police_col + 1 < len(maze[0]) and maze[police_row][police_col + 1] != 1: # check if the cell to the right of the police is not a wall
                 police_col += 1
             # Check if the police can move left
-            elif police_col > cube_x and police_col - 1 >= 0 and maze[police_row][police_col - 1] != 1:
+            elif police_col > cube_x and police_col - 1 >= 0 and maze[police_row][police_col - 1] != 1: # check if the cell to the left of the police is not a wall
                 police_col -= 1
             # Check if the police can move down
-            if police_row < cube_y and police_row + 1 < len(maze) and maze[police_row + 1][police_col] != 1:
+            if police_row < cube_y and police_row + 1 < len(maze) and maze[police_row + 1][police_col] != 1: # check if the cell below the police is not a wall
                 police_row += 1
             # Check if the police can move up
-            elif police_row > cube_y and police_row - 1 >= 0 and maze[police_row - 1][police_col] != 1:
+            elif police_row > cube_y and police_row - 1 >= 0 and maze[police_row - 1][police_col] != 1: # check if the cell above the police is not a wall
                 police_row -= 1
 
             # This is very basic collision detection
@@ -202,12 +203,14 @@ while running:
                 cube_y = 10
                 game_over = True
                 game_over_reason = "arrested"
-        police_positions[i] = (police_row, police_col)
+        police_positions[i] = (police_row, police_col) # update the police position
             
     # timer logic
     # current_time = time.time()
     # elapsed_time = current_time - timer_start
     # remaining_time = max(timer_duration - elapsed_time, 0) # max function to prevent negative time
+    
+    # timer logic
     if not game_over and not game_won:
         current_time = time.time()
         elapsed_time = current_time - timer_start
@@ -242,10 +245,11 @@ while running:
     pygame.draw.rect(window, red, (cube_x * cell_size + maze_position[0], cube_y*cell_size + maze_position[1], cell_size, cell_size))
     
     # popo flasher timer
-    police_flash_timer += 2
-    if police_flash_timer >= police_flash_interval:
-        police_flash_timer = 0
+    police_flash_timer += 2 # increment the timer by 2
+    if police_flash_timer >= police_flash_interval: # check if the timer has reached the interval
+        police_flash_timer = 0 # reset the timer
     
+    # draw police
     for police_row, police_col in police_positions:
         police_x = police_col * cell_size + maze_position[0]
         police_y = police_row * cell_size + maze_position[1]
@@ -271,6 +275,7 @@ while running:
     pygame.draw.rect(window, white, info_area, 2)  # outline for info box
     pygame.draw.rect(window, white, (maze_position[0]-2, maze_position[1]-2, cell_size*len(maze[0])+4, cell_size*len(maze)+4), 2)  # outline for maze
     
+    # draw text
     draw_text(window, "Maze Game", white, title_area, title_font)
     draw_text(window, f"Time: {int(remaining_time)}", white, (info_area[0], info_area[1], info_area[2], 40), font)
     
@@ -280,6 +285,7 @@ while running:
 
     #     draw_text(window, "Press Enter to play again", white, (info_area[0], info_area[1] + 80, info_area[2], info_area[3] - 80), font)
 
+    # message displayed when the player wins or loses
     if game_won:
         draw_text(window, "You got away! Press Enter to play again.", green, (info_area[0], info_area[1] + 40, info_area[2], info_area[3] - 40), font)
     
